@@ -3,14 +3,15 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import pandas as pd
 import re
-import time  # Import the time module
+import time
+import threading
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport=Football&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
 
 # Calculate the date range for the last 90 days
 today = datetime.now()
-ninety_days_ago = today - timedelta(days=2)
+ninety_days_ago = today - timedelta(days=90)
 
 # Function to check if a sold date is within the last 90 days
 def is_within_last_90_days(sold_date_str):
@@ -27,20 +28,30 @@ sold_data = []
 def clean_set_name(set_name):
     return re.sub(r'^\d{4}\s+', '', set_name).strip()
 
+def print_elapsed_time():
+    while True:
+        elapsed_time = time.time() - start_time
+        print(f"Elapsed Time: {elapsed_time:.2f} seconds", end='\r')
+        time.sleep(1)  # Update every second
+
+# Start the elapsed time thread
+elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
+elapsed_time_thread.start()
+
 try:
     while True:
         url = base_url.format(page)
         response = requests.get(url)
         
         if response.status_code != 200:
-            print(f"Failed to retrieve data from page {page}: {response.status_code}")
+            print(f"\nFailed to retrieve data from page {page}: {response.status_code}")
             break
         
         soup = BeautifulSoup(response.text, 'html.parser')
         sold_items = soup.find_all('li', class_='s-item s-item__pl-on-bottom')
         
         if not sold_items:
-            print("No more sold items found.")
+            print("\nNo more sold items found.")
             break
             
         found_recent = False
@@ -109,13 +120,13 @@ try:
                     found_recent = True
 
         if not found_recent:
-            print("No recent sold items found on this page.")
+            print("\nNo recent sold items found on this page.")
             break
         
         page += 1
 
 except KeyboardInterrupt:
-    print("Data collection interrupted. Saving collected data...")
+    print("\nData collection interrupted. Saving collected data...")
 
 # Save the collected data to an Excel file
 df = pd.DataFrame(sold_data)
@@ -124,5 +135,5 @@ df.to_excel("sold_data.xlsx", index=False)
 # End timer and calculate duration
 end_time = time.time()
 execution_time = end_time - start_time
-print(f"Sold data saved to 'sold_data.xlsx'.")
-print(f"Execution Time: {execution_time:.2f} seconds")
+print(f"\nSold data saved to 'sold_data.xlsx'.")
+print(f"Total Execution Time: {execution_time:.2f} seconds")
