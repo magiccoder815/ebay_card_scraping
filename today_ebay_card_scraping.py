@@ -7,16 +7,16 @@ import time
 import threading
 
 # Define the base URL template
-base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport=Football&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
+base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&_udlo=150&rt=nc&Sport=Baseball%7CFootball%7CIce%2520Hockey%7CBasketball&_dcat=261328&_ipg=240&_pgn={}&rt=nc"
 
-# Calculate the date range for the last 90 days
-today = datetime.now()
-ninety_days_ago = today - timedelta(days=90)
+# Calculate the date for the previous day
+yesterday = datetime.now() - timedelta(days=1)
+yesterday_str = yesterday.strftime("%Y-%m-%d")
 
-# Function to check if a sold date is within the last 90 days
-def is_within_last_90_days(sold_date_str):
+# Function to check if a sold date is from yesterday
+def is_sold_yesterday(sold_date_str):
     sold_date = datetime.strptime(sold_date_str, "%b %d, %Y")
-    return sold_date >= ninety_days_ago
+    return sold_date.strftime("%Y-%m-%d") == yesterday_str
 
 # Start timer
 start_time = time.time()
@@ -38,18 +38,10 @@ def print_elapsed_time():
 elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
 elapsed_time_thread.start()
 
-# Define the proxy with authentication
-username = '74176165-zone-custom-region-US-city-dallas-sessid-VYeEqIiE'
-password = 'Mlaunam3'
-proxy = {
-    "http": f"http://{username}:{password}@f.proxys5.net:6200",
-    "https": f"http://{username}:{password}@f.proxys5.net:6200"
-}
-
 try:
     while True:
         url = base_url.format(page)
-        response = requests.get(url, proxies=proxy)
+        response = requests.get(url)
         
         if response.status_code != 200:
             print(f"\nFailed to retrieve data from page {page}: {response.status_code}")
@@ -69,11 +61,11 @@ try:
             if date_span:
                 sold_date_text = date_span.get_text(strip=True)
                 sold_date_text_cleaned = sold_date_text.replace("Sold ", "").strip()
-                if is_within_last_90_days(sold_date_text_cleaned):
+                if is_sold_yesterday(sold_date_text_cleaned):
                     sold_date = datetime.strptime(sold_date_text_cleaned, "%b %d, %Y").strftime("%Y-%m-%d")
                     link = item.find('a', class_='s-item__link')['href']
                     
-                    product_response = requests.get(link, proxies=proxy)
+                    product_response = requests.get(link)
                     product_soup = BeautifulSoup(product_response.text, 'html.parser')
                     
                     sport = season_year = set_name = variation = player_name = ""
@@ -136,12 +128,17 @@ try:
 except KeyboardInterrupt:
     print("\nData collection interrupted. Saving collected data...")
 
-# Save the collected data to an Excel file
+# Save the collected data to an Excel file using yesterday's date in the filename
+if sold_data:
+    file_name = f"{yesterday.strftime('%Y-%m-%d')}.xlsx"
+else:
+    file_name = "No_Sold_Data.xlsx"
+
 df = pd.DataFrame(sold_data)
-df.to_excel("sold_data.xlsx", index=False)
+df.to_excel(file_name, index=False)
 
 # End timer and calculate duration
 end_time = time.time()
 execution_time = end_time - start_time
-print(f"\nSold data saved to 'sold_data.xlsx'.")
+print(f"\nSold data saved to '{file_name}'.")
 print(f"Total Execution Time: {execution_time:.2f} seconds")
