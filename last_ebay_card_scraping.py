@@ -47,7 +47,7 @@ elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
 elapsed_time_thread.start()
 
 # Define the proxy with authentication
-username = '74176165-zone-custom-region-US-city-dallas-sessid-gKF4sj0e'
+username = '74176165-zone-custom-region-US-city-dallas-sessid-LKjJG6II'
 password = 'Mlaunam3'
 proxy = {
     "http": f"http://{username}:{password}@f.proxys5.net:6200",
