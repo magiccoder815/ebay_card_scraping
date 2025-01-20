@@ -73,9 +73,9 @@ try:
             date_span = item.find('span', class_='s-item__caption--signal POSITIVE')
             if date_span:
                 sold_date_text = date_span.get_text(strip=True)
-                sold_date_text_cleaned = sold_date_text.replace("Sold ", "").strip()
-                if is_within_last_90_days(sold_date_text_cleaned):
-                    sold_date = datetime.strptime(sold_date_text_cleaned, "%b %d, %Y").strftime("%Y-%m-%d")
+                sold_date_text_cleaned = re.search(r'\b\w{3}\s\d{1,2},\s\d{4}\b', sold_date_text)
+                if sold_date_text_cleaned and is_within_last_90_days(sold_date_text_cleaned.group(0)):
+                    sold_date = datetime.strptime(sold_date_text_cleaned.group(0), "%b %d, %Y").strftime("%Y-%m-%d")
                     link = item.find('a', class_='s-item__link')['href']
                     
                     product_response = requests.get(link, proxies=proxy)
@@ -143,7 +143,7 @@ except KeyboardInterrupt:
 
 # Save the collected data to an Excel file
 df = pd.DataFrame(sold_data)
-df.to_excel("{sport_name}_Sold_Data.xlsx", index=False)
+df.to_excel(f"{sport_name}_Sold_Data.xlsx", index=False)
 
 # End timer and calculate duration
 end_time = time.time()
