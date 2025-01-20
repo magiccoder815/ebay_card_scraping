@@ -5,11 +5,11 @@ import pandas as pd
 import re
 import time
 import threading
-import os  # Import os module to handle directory creation
+import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-sport_name = "Auto Racing"
+sport_name = "Boxing"
 encoded_sport = sport_name.replace(" ", "%2520")
 
 # Start timer
@@ -37,7 +37,7 @@ if not os.path.exists(sport_name):
     os.makedirs(sport_name)
 
 # Define the proxy with authentication
-username = '74176165-zone-custom-region-US-city-miami-sessid-8moCyN3k-sessTime-15'
+username = '74176165-zone-custom-region-US-city-miami-sessid-YRBByjvF'
 password = 'Mlaunam3'
 proxy = {
     "http": f"http://{username}:{password}@f.proxys5.net:6200",
@@ -46,6 +46,7 @@ proxy = {
 
 try:
     while True:  # Continue indefinitely until no sold items are found
+        print("Page number:", page)
         page_start_time = time.time()  # Start time for the current page
         url = base_url.format(encoded_sport, page)
         print(url)
@@ -57,6 +58,13 @@ try:
         
         soup = BeautifulSoup(response.text, 'html.parser')
         sold_items = soup.find_all('li', class_='s-item s-item__pl-on-bottom')
+        
+        # Always scrape the current page, but check the item count
+        sold_items_count = len(sold_items)
+        
+        if sold_items_count < 239:
+            print(f"\nFewer than 239 sold items found on this page: {sold_items_count}.")
+        
         if not sold_items:
             print("\nNo more sold items found.")
             break
@@ -129,7 +137,7 @@ try:
         if not found_recent:
             print("\nNo recent sold items found on this page.")
             break
-        
+
         # Save the collected data for the current page to an Excel file
         df = pd.DataFrame(sold_data)
         page_filename = os.path.join(sport_name, f"{sport_name}_Sold_Data_Page_{page}.xlsx")
@@ -139,6 +147,11 @@ try:
         page_end_time = time.time()  # End time for the current page
         page_duration = page_end_time - page_start_time
         print(f"\nTime taken for page {page}: {page_duration:.2f} seconds")  # Print time for the current page
+        
+        # Stop scraping after the current page if fewer than 239 items
+        if sold_items_count < 239:
+            print("\nStopping scraping after this page.")
+            break
         
         page += 1  # Increment page number for the next iteration
 
