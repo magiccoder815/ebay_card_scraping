@@ -9,13 +9,13 @@ import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-sport_name = "Boxing"
+sport_name = "Ice Hockey"
 encoded_sport = sport_name.replace(" ", "%2520")
 
 # Start timer
 start_time = time.time()
 
-# Start with the first page
+# Start with page 14
 page = 1
 sold_data = []
 
@@ -37,7 +37,7 @@ if not os.path.exists(sport_name):
     os.makedirs(sport_name)
 
 # Define the proxy with authentication
-username = '74176165-zone-custom-region-US-city-miami-sessid-YRBByjvF'
+username = '74176165-zone-custom-region-US-city-miami-sessid-0AZY4sVH'
 password = 'Mlaunam3'
 proxy = {
     "http": f"http://{username}:{password}@f.proxys5.net:6200",
@@ -59,7 +59,7 @@ try:
         soup = BeautifulSoup(response.text, 'html.parser')
         sold_items = soup.find_all('li', class_='s-item s-item__pl-on-bottom')
         
-        # Always scrape the current page, but check the item count
+        # Always scrape the current page
         sold_items_count = len(sold_items)
         
         if sold_items_count < 239:

@@ -6,6 +6,7 @@ import re
 import time
 import threading
 import pytz
+import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&_udlo=150&rt=nc&Sport={}&_dcat=261328&_ipg=240&_pgn={}"
@@ -53,6 +54,11 @@ proxy = {
     "http": f"http://{username}:{password}@f.proxys5.net:6200",
     "https": f"http://{username}:{password}@f.proxys5.net:6200"
 }
+
+# Create a directory for today's date
+date_folder = yesterday.strftime("%Y-%m-%d")
+if not os.path.exists(date_folder):
+    os.makedirs(date_folder)
 
 try:
     for sport in sports:
@@ -154,7 +160,7 @@ try:
 
         # Save the collected data to an Excel file for the current sport
         if sold_data:
-            file_name = f"{sport}_{yesterday.strftime('%Y-%m-%d')}.xlsx"
+            file_name = os.path.join(date_folder, f"{sport}_{yesterday.strftime('%Y-%m-%d')}.xlsx")
             df = pd.DataFrame(sold_data)
             df.to_excel(file_name, index=False)
             print(f"Sold data saved to '{file_name}'.")
@@ -165,7 +171,7 @@ except KeyboardInterrupt:
 
 # Final save of merged data if there are any
 if all_sold_data:
-    merged_file_name = f"{yesterday.strftime('%Y-%m-%d')}.xlsx"
+    merged_file_name = os.path.join(date_folder, f"{yesterday.strftime('%Y-%m-%d')}.xlsx")
     df_combined = pd.DataFrame(all_sold_data)
     df_combined.to_excel(merged_file_name, index=False)
     print(f"Merged sold data saved to '{merged_file_name}'.")
