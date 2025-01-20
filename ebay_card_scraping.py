@@ -1,25 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 import re
 import time
 import threading
+import os  # Import os module to handle directory creation
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-
-# Calculate the date range for the last 90 days
-today = datetime.now()
-ninety_days_ago = today - timedelta(days=90)
-
-sport_name = "Ice Hockey"
+sport_name = "Auto Racing"
 encoded_sport = sport_name.replace(" ", "%2520")
-
-# Function to check if a sold date is within the last 90 days
-def is_within_last_90_days(sold_date_str):
-    sold_date = datetime.strptime(sold_date_str, "%b %d, %Y")
-    return sold_date >= ninety_days_ago
 
 # Start timer
 start_time = time.time()
@@ -28,22 +19,25 @@ start_time = time.time()
 page = 1
 sold_data = []
 
-
 def clean_set_name(set_name):
     return re.sub(r'^\d{4}(-\d{2})?\s*', '', set_name).strip()
 
 def print_elapsed_time():
     while True:
         elapsed_time = time.time() - start_time
-        print(f"Elapsed Time: {elapsed_time:.2f} seconds", end='\r')
+        print(f"Total Elapsed Time: {elapsed_time:.2f} seconds", end='\r')
         time.sleep(1)  # Update every second
 
 # Start the elapsed time thread
 elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
 elapsed_time_thread.start()
 
+# Create directory for sport data
+if not os.path.exists(sport_name):
+    os.makedirs(sport_name)
+
 # Define the proxy with authentication
-username = '74176165-zone-custom-region-US-city-dallas-sessid-hYToGw0z'
+username = '74176165-zone-custom-region-US-city-miami-sessid-8moCyN3k-sessTime-15'
 password = 'Mlaunam3'
 proxy = {
     "http": f"http://{username}:{password}@f.proxys5.net:6200",
@@ -51,7 +45,8 @@ proxy = {
 }
 
 try:
-    while True:
+    while True:  # Continue indefinitely until no sold items are found
+        page_start_time = time.time()  # Start time for the current page
         url = base_url.format(encoded_sport, page)
         print(url)
         response = requests.get(url, proxies=proxy)
@@ -62,7 +57,6 @@ try:
         
         soup = BeautifulSoup(response.text, 'html.parser')
         sold_items = soup.find_all('li', class_='s-item s-item__pl-on-bottom')
-        
         if not sold_items:
             print("\nNo more sold items found.")
             break
@@ -74,7 +68,7 @@ try:
             if date_span:
                 sold_date_text = date_span.get_text(strip=True)
                 sold_date_text_cleaned = re.search(r'\b\w{3}\s\d{1,2},\s\d{4}\b', sold_date_text)
-                if sold_date_text_cleaned and is_within_last_90_days(sold_date_text_cleaned.group(0)):
+                if sold_date_text_cleaned:
                     sold_date = datetime.strptime(sold_date_text_cleaned.group(0), "%b %d, %Y").strftime("%Y-%m-%d")
                     link = item.find('a', class_='s-item__link')['href']
                     
@@ -136,17 +130,28 @@ try:
             print("\nNo recent sold items found on this page.")
             break
         
-        page += 1
+        # Save the collected data for the current page to an Excel file
+        df = pd.DataFrame(sold_data)
+        page_filename = os.path.join(sport_name, f"{sport_name}_Sold_Data_Page_{page}.xlsx")
+        df.to_excel(page_filename, index=False)
+        print(f"\nData for page {page} saved to '{page_filename}'.")
+
+        page_end_time = time.time()  # End time for the current page
+        page_duration = page_end_time - page_start_time
+        print(f"\nTime taken for page {page}: {page_duration:.2f} seconds")  # Print time for the current page
+        
+        page += 1  # Increment page number for the next iteration
 
 except KeyboardInterrupt:
     print("\nData collection interrupted. Saving collected data...")
 
-# Save the collected data to an Excel file
-df = pd.DataFrame(sold_data)
-df.to_excel(f"{sport_name}_Sold_Data.xlsx", index=False)
+# Save the final collected data to an Excel file
+df_final = pd.DataFrame(sold_data)
+final_filename = os.path.join(sport_name, f"{sport_name}_Sold_Data_Final.xlsx")
+df_final.to_excel(final_filename, index=False)
 
 # End timer and calculate duration
 end_time = time.time()
 execution_time = end_time - start_time
-print(f"\nSold data saved to '{sport_name}_Sold_Data.xlsx'.")
+print(f"\nSold data saved to '{final_filename}'.")
 print(f"Total Execution Time: {execution_time:.2f} seconds")
