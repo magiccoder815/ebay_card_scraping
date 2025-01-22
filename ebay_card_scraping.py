@@ -9,7 +9,7 @@ import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-sport_name = "Ice Hockey"
+sport_name = "Auto Racing"
 encoded_sport = sport_name.replace(" ", "%2520")
 
 # Start timer
@@ -50,7 +50,7 @@ try:
         page_start_time = time.time()  # Start time for the current page
         url = base_url.format(encoded_sport, page)
         print(url)
-        response = requests.get(url, proxies=proxy)
+        response = requests.get(url)
         
         if response.status_code != 200:
             print(f"\nFailed to retrieve data from page {page}: {response.status_code}")
@@ -61,6 +61,8 @@ try:
         
         # Always scrape the current page
         sold_items_count = len(sold_items)
+
+        print(f"\nSold items: {sold_items_count}")
         
         if sold_items_count < 239:
             print(f"\nFewer than 239 sold items found on this page: {sold_items_count}.")
@@ -73,6 +75,7 @@ try:
         
         for item in sold_items:
             date_span = item.find('span', class_='s-item__caption--signal POSITIVE')
+            sold_price_span = item.find('span', class_='s-item__price')
             if date_span:
                 sold_date_text = date_span.get_text(strip=True)
                 sold_date_text_cleaned = re.search(r'\b\w{3}\s\d{1,2},\s\d{4}\b', sold_date_text)
@@ -80,7 +83,7 @@ try:
                     sold_date = datetime.strptime(sold_date_text_cleaned.group(0), "%b %d, %Y").strftime("%Y-%m-%d")
                     link = item.find('a', class_='s-item__link')['href']
                     
-                    product_response = requests.get(link, proxies=proxy)
+                    product_response = requests.get(link)
                     product_soup = BeautifulSoup(product_response.text, 'html.parser')
                     
                     sport = season_year = set_name = variation = player_name = ""
@@ -122,13 +125,19 @@ try:
                                 variation = value
                             elif label == "Player/Athlete":
                                 player_name = value
-                    
+                    if sold_price_span:
+                        sold_price_text = sold_price_span.get_text(strip=True)  # Get the price text
+                        sold_price = sold_price_text  # You might want to further process this if necessary
+                    else:
+                        sold_price = "N/A"  # Default value if price not found
+
                     sold_data.append({
                         "Sport": sport,
                         "Season Year": season_year,
                         "Set": set_name,
                         "Variation": variation,
                         "Player Name": player_name,
+                        "Sold Price": sold_price,
                         "Sold Date": sold_date,
                         "Card Link": link
                     })

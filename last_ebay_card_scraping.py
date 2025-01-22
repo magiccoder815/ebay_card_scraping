@@ -88,11 +88,14 @@ try:
             
             for item in sold_items:
                 date_span = item.find('span', class_='s-item__caption--signal POSITIVE')
+                sold_price_span = item.find('span', class_='s-item__price')
+
                 if date_span:
-                    sold_date_text = date_span.get_text(strip=True).replace("Sold ", "").strip()
+                    sold_date_text = date_span.get_text(strip=True)
+                    sold_date_text_cleaned = re.search(r'\b\w{3}\s\d{1,2},\s\d{4}\b', sold_date_text).group(0)
                     
-                    if is_sold_yesterday(sold_date_text):
-                        sold_date = datetime.strptime(sold_date_text, "%b %d, %Y").strftime("%Y-%m-%d")
+                    if is_sold_yesterday(sold_date_text_cleaned):
+                        sold_date = datetime.strptime(sold_date_text_cleaned, "%b %d, %Y").strftime("%Y-%m-%d")
                         link = item.find('a', class_='s-item__link')['href']
                         
                         # Fetch product details
@@ -141,12 +144,19 @@ try:
                                 elif label == "Player/Athlete":
                                     player_name = value
                         
+                        if sold_price_span:
+                            sold_price_text = sold_price_span.get_text(strip=True)  # Get the price text
+                            sold_price = sold_price_text  # You might want to further process this if necessary
+                        else:
+                            sold_price = "N/A"  # Default value if price not found
+
                         sold_data.append({
                             "Sport": sport_val or sport,  # Store the sport being fetched
                             "Season Year": season_year,
                             "Set": set_name,
                             "Variation": variation,
                             "Player Name": player_name,
+                            "Sold Price": sold_price,
                             "Sold Date": sold_date,
                             "Card Link": link
                         })
