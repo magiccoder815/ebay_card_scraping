@@ -9,7 +9,7 @@ import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-sport_name = "Auto Racing"
+sport_name = "Baseball"
 encoded_sport = sport_name.replace(" ", "%2520")
 
 # Start timer
