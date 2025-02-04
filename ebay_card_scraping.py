@@ -10,7 +10,10 @@ import os
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
 sport_name = "Baseball"
-encoded_sport = sport_name.replace(" ", "%2520")
+if sport_name == "Mixed Martial Arts":
+    encoded_sport = "Mixed%2520Martial%2520Arts%2520%2528MMA%2529"
+else:
+    encoded_sport = sport_name.replace(" ", "%2520")
 
 # Start timer
 start_time = time.time()

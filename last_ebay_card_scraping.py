@@ -62,8 +62,10 @@ if not os.path.exists(date_folder):
 
 try:
     for sport in sports:
-        page = 1  # Reset page number for each sport
-        encoded_sport = sport.replace(" ", "%2520")  # Manually replace spaces with %2520
+        if sport == "Mixed Martial Arts":
+            encoded_sport = "Mixed%2520Martial%2520Arts%2520%2528MMA%2529"
+        else:
+            encoded_sport = sport.replace(" ", "%2520")
         print(f"\nFetching data for {sport}...")
 
         sold_data = []  # Reset sold_data for the current sport
