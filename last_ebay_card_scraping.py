@@ -31,7 +31,7 @@ def is_sold_yesterday(sold_date_str):
 start_time = time.time()
 
 # List of sports to scrape
-sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling"]
+sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling", "Mixed Martial Arts"]
 all_sold_data = []  # To store data for merging
 
 def clean_set_name(set_name):
@@ -62,6 +62,7 @@ if not os.path.exists(date_folder):
 
 try:
     for sport in sports:
+        page = 1
         if sport == "Mixed Martial Arts":
             encoded_sport = "Mixed%2520Martial%2520Arts%2520%2528MMA%2529"
         else:
