@@ -31,7 +31,7 @@ def is_sold_yesterday(sold_date_str):
 start_time = time.time()
 
 # List of sports to scrape
-sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling"]
+sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling", "Mixed Martial Arts"]
 all_sold_data = []  # To store data for merging
 
 def clean_set_name(set_name):
