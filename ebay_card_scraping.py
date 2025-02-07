@@ -9,7 +9,7 @@ import os
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&Sport={}&_dcat=261328&_udlo=150&_ipg=240&_pgn={}&rt=nc"
-sport_name = "Baseball"
+sport_name = "Breaking"
 if sport_name == "Mixed Martial Arts":
     encoded_sport = "Mixed%2520Martial%2520Arts%2520%2528MMA%2529"
 else:
@@ -102,13 +102,13 @@ try:
                                 value_text = value.get_text(strip=True)
                                 if name_text == "Sport":
                                     sport = value_text
-                                elif name_text == "Season":
+                                elif name_text in ["Season", "Year"]:
                                     season_year = value_text
                                 elif name_text == "Set":
                                     set_name = clean_set_name(value_text)
                                 elif name_text == "Parallel/Variety":
                                     variation = value_text
-                                elif name_text == "Player/Athlete":
+                                elif name_text in ["Player/Athlete", "Player"]:
                                     player_name = value_text
                     
                     specifications_section_new = product_soup.find('div', {'data-testid': 'ux-layout-section-evo'})
@@ -120,13 +120,13 @@ try:
                             
                             if label == "Sport":
                                 sport = value
-                            elif label == "Season":
+                            elif label in ["Season", "Year"]:
                                 season_year = value
                             elif label == "Set":
                                 set_name = clean_set_name(value)
                             elif label == "Parallel/Variety":
                                 variation = value
-                            elif label == "Player/Athlete":
+                            elif label in ["Player/Athlete", "Player"]:
                                 player_name = value
                     if sold_price_span:
                         sold_price_text = sold_price_span.get_text(strip=True)  # Get the price text

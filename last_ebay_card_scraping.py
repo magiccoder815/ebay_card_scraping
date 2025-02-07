@@ -31,7 +31,9 @@ def is_sold_yesterday(sold_date_str):
 start_time = time.time()
 
 # List of sports to scrape
-sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling", "Mixed Martial Arts"]
+# sports = ["Football", "Baseball", "Ice Hockey", "Basketball", "Soccer", "Auto Racing", "Boxing", "Wrestling", "Mixed Martial Arts"]
+sports = ["Ice Hockey"]
+
 all_sold_data = []  # To store data for merging
 
 def clean_set_name(set_name):
@@ -105,7 +107,7 @@ try:
                         product_response = requests.get(link)
                         product_soup = BeautifulSoup(product_response.text, 'html.parser')
                         
-                        sport_val = season_year = set_name = variation = player_name = ""
+                        sport = season_year = set_name = variation = player_name = ""
                         
                         # Attempt to find specifications
                         specifications_section = product_soup.find('section', class_='product-spectification')
@@ -118,7 +120,7 @@ try:
                                     name_text = name.get_text(strip=True)
                                     value_text = value.get_text(strip=True)
                                     if name_text == "Sport":
-                                        sport_val = value_text
+                                        sport = value_text
                                     elif name_text == "Season":
                                         season_year = value_text
                                     elif name_text == "Set":
@@ -137,7 +139,7 @@ try:
                                 value = detail.find('dd').get_text(strip=True) if detail.find('dd') else ""
                                 
                                 if label == "Sport":
-                                    sport_val = value
+                                    sport = value
                                 elif label == "Season":
                                     season_year = value
                                 elif label == "Set":
@@ -154,7 +156,7 @@ try:
                             sold_price = "N/A"  # Default value if price not found
 
                         sold_data.append({
-                            "Sport": sport_val or sport,  # Store the sport being fetched
+                            "Sport": sport,  # Store the sport being fetched
                             "Season Year": season_year,
                             "Set": set_name,
                             "Variation": variation,

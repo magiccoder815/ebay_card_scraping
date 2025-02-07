@@ -110,7 +110,7 @@ try:
                         product_response = requests.get(link)
                         product_soup = BeautifulSoup(product_response.text, 'html.parser')
                         
-                        sport_val = season_year = set_name = variation = player_name = ""
+                        sport = season_year = set_name = variation = player_name = ""
                         
                         # Attempt to find specifications
                         specifications_section = product_soup.find('section', class_='product-spectification')
@@ -123,14 +123,14 @@ try:
                                     name_text = name.get_text(strip=True)
                                     value_text = value.get_text(strip=True)
                                     if name_text == "Sport":
-                                        sport_val = value_text
-                                    elif name_text == "Season":
+                                        sport = value_text
+                                    elif name_text in ["Season", "Year"]:
                                         season_year = value_text
                                     elif name_text == "Set":
                                         set_name = clean_set_name(value_text)
                                     elif name_text == "Parallel/Variety":
                                         variation = value_text
-                                    elif name_text == "Player/Athlete":
+                                    elif name_text in ["Player/Athlete", "Player"]:
                                         player_name = value_text
                         
                         # New specifications section
@@ -142,14 +142,14 @@ try:
                                 value = detail.find('dd').get_text(strip=True) if detail.find('dd') else ""
                                 
                                 if label == "Sport":
-                                    sport_val = value
-                                elif label == "Season":
+                                    sport = value
+                                elif label in ["Season", "Year"]:
                                     season_year = value
                                 elif label == "Set":
                                     set_name = clean_set_name(value)
                                 elif label == "Parallel/Variety":
                                     variation = value
-                                elif label == "Player/Athlete":
+                                elif label in ["Player/Athlete", "Player"]:
                                     player_name = value
                         
                         if sold_price_span:
@@ -159,7 +159,7 @@ try:
                             sold_price = "N/A"  # Default value if price not found
 
                         sold_data.append({
-                            "Sport": sport_val or sport,  # Store the sport being fetched
+                            "Sport": sport,  # Store the sport being fetched
                             "Season Year": season_year,
                             "Set": set_name,
                             "Variation": variation,
