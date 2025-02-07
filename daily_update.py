@@ -9,6 +9,7 @@ import pytz
 import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from pathlib import Path
 
 # Define the base URL template
 base_url = "https://www.ebay.com/sch/i.html?_nkw=PSA+10&_sacat=0&_from=R40&LH_Sold=1&LH_Complete=1&_udlo=150&rt=nc&Sport={}&_dcat=261328&_ipg=240&_pgn={}"
@@ -33,7 +34,17 @@ def is_sold_yesterday(sold_date_str):
 start_time = time.time()
 
 # List of sports to scrape
-sports = ["Ice Hockey"]
+sports = [
+    "Auto Racing", 
+    "Baseball", 
+    "Boxing", 
+    "Breaking", 
+    "Football", 
+    "Ice Hockey", 
+    "Soccer", 
+    "Wrestling", 
+    "Mixed Martial Arts"
+]
 
 all_sold_data = []  # To store data for merging
 
@@ -50,32 +61,27 @@ def print_elapsed_time():
 elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
 elapsed_time_thread.start()
 
-# Define the proxy with authentication (optional)
-username = '74176165-zone-custom-region-US-city-dallas-sessid-LKjJG6II'
-password = 'Mlaunam3'
-proxy = {
-    "http": f"http://{username}:{password}@f.proxys5.net:6200",
-    "https": f"http://{username}:{password}@f.proxys5.net:6200"
-}
-
-# Create a directory for today's date
+# Create a directory for yesterday's date
 date_folder = yesterday.strftime("%Y-%m-%d")
-if not os.path.exists(date_folder):
-    os.makedirs(date_folder)
+os.makedirs(date_folder, exist_ok=True)
 
 # Google Sheets setup
+SERVICE_ACCOUNT_FILE = Path(__file__).parent / "../keys/ebay-sheet.json"
+SERVICE_ACCOUNT_FILE = SERVICE_ACCOUNT_FILE.resolve()  # Convert to absolute path
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('ebay-sheet.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name(str(SERVICE_ACCOUNT_FILE), scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA/edit?gid=0').sheet1
 
 try:
     for sport in sports:
         page = 1
+        # Handle encoding for Mixed Martial Arts specifically
         if sport == "Mixed Martial Arts":
             encoded_sport = "Mixed%2520Martial%2520Arts%2520%2528MMA%2529"
         else:
-            encoded_sport = sport.replace(" ", "%2520")
+            encoded_sport = sport.replace(" ", "%2520")  # Encode spaces for other sports
+
         print(f"\nFetching data for {sport}...")
 
         sold_data = []  # Reset sold_data for the current sport
@@ -156,11 +162,7 @@ try:
                                 elif label in ["Player/Athlete", "Player"]:
                                     player_name = value
                         
-                        if sold_price_span:
-                            sold_price_text = sold_price_span.get_text(strip=True)
-                            sold_price = sold_price_text
-                        else:
-                            sold_price = "N/A"
+                        sold_price = sold_price_span.get_text(strip=True) if sold_price_span else "N/A"
 
                         sold_data.append({
                             "Sport": sport,

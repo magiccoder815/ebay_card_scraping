@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 # Define Google Sheets API setup
-SERVICE_ACCOUNT_FILE = "ebay-sheet.json"
+SERVICE_ACCOUNT_FILE = os.path.join("..", "keys", "ebay-sheet.json")
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Define the list of files and their corresponding sport names
