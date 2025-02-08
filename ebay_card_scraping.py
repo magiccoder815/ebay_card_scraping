@@ -89,7 +89,7 @@ try:
                     product_response = requests.get(link)
                     product_soup = BeautifulSoup(product_response.text, 'html.parser')
                     
-                    sport = season_year = set_name = variation = player_name = ""
+                    sport_val = season_year = set_name = variation = player_name = ""
                     
                     specifications_section = product_soup.find('section', class_='product-spectification')
                     if specifications_section:
@@ -101,7 +101,7 @@ try:
                                 name_text = name.get_text(strip=True)
                                 value_text = value.get_text(strip=True)
                                 if name_text == "Sport":
-                                    sport = value_text
+                                    sport_val = value_text
                                 elif name_text in ["Season", "Year"]:
                                     season_year = value_text
                                 elif name_text == "Set":
@@ -119,7 +119,7 @@ try:
                             value = detail.find('dd').get_text(strip=True) if detail.find('dd') else ""
                             
                             if label == "Sport":
-                                sport = value
+                                sport_val = value
                             elif label in ["Season", "Year"]:
                                 season_year = value
                             elif label == "Set":
@@ -135,7 +135,7 @@ try:
                         sold_price = "N/A"  # Default value if price not found
 
                     sold_data.append({
-                        "Sport": sport,
+                        "Sport": sport_val,
                         "Season Year": season_year,
                         "Set": set_name,
                         "Variation": variation,

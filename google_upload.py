@@ -10,13 +10,13 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 # Define the list of files and their corresponding sport names
 files = [
     ("Auto Racing_Sold_Data_Unique.xlsx", "Auto Racing"),
+    ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
     ("Baseball_Sold_Data_Unique.xlsx", "Baseball"),
     ("Boxing_Sold_Data_Unique.xlsx", "Boxing"),
     ("Breaking_Sold_Data_Unique.xlsx", "Breaking"),
     ("Football_Sold_Data_Unique.xlsx", "Football"),
     ("Ice Hockey_Sold_Data_Unique.xlsx", "Ice Hockey"),
     ("Soccer_Sold_Data_Unique.xlsx", "Soccer"),
-    ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
     ("Mixed Martial Arts_Sold_Data_Unique.xlsx", "Mixed Martial Arts"),
 ]
 
