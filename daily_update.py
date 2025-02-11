@@ -60,8 +60,12 @@ def print_elapsed_time():
 elapsed_time_thread = threading.Thread(target=print_elapsed_time, daemon=True)
 elapsed_time_thread.start()
 
-# Create a directory for yesterday's date
-date_folder = yesterday.strftime("%Y-%m-%d")
+# Create the C:\eBay directory if it doesn't exist
+eBay_directory = "C:\\eBay"
+os.makedirs(eBay_directory, exist_ok=True)
+
+# Create a directory for yesterday's date in the C:\eBay directory
+date_folder = f"{eBay_directory}\\{yesterday.strftime('%Y-%m-%d')}"
 os.makedirs(date_folder, exist_ok=True)
 
 # Google Sheets setup
