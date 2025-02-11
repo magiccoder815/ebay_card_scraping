@@ -43,7 +43,8 @@ sports = [
     "Ice Hockey", 
     "Soccer", 
     "Wrestling", 
-    "Mixed Martial Arts"
+    "Mixed Martial Arts",
+    "Basketball"
 ]
 
 def clean_set_name(set_name):
@@ -64,8 +65,7 @@ date_folder = yesterday.strftime("%Y-%m-%d")
 os.makedirs(date_folder, exist_ok=True)
 
 # Google Sheets setup
-SERVICE_ACCOUNT_FILE = Path(__file__).parent / "../keys/ebay-sheet.json"
-SERVICE_ACCOUNT_FILE = SERVICE_ACCOUNT_FILE.resolve()  # Convert to absolute path
+SERVICE_ACCOUNT_FILE = 'C:/ebay-sheet.json'
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name(str(SERVICE_ACCOUNT_FILE), scope)
 client = gspread.authorize(creds)
