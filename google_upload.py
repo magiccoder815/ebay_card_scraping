@@ -4,21 +4,21 @@ import pandas as pd
 import os
 
 # Define Google Sheets API setup
-SERVICE_ACCOUNT_FILE = os.path.join("..", "keys", "ebay-sheet.json")
+SERVICE_ACCOUNT_FILE = 'C:/ebay-sheet.json'
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Define the list of files and their corresponding sport names
 files = [
     ("Auto Racing_Sold_Data_Unique.xlsx", "Auto Racing"),
-    ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
     ("Baseball_Sold_Data_Unique.xlsx", "Baseball"),
+    ("Basketball_Sold_Data_Unique.xlsx", "Basketball"),
     ("Boxing_Sold_Data_Unique.xlsx", "Boxing"), 
     ("Breaking_Sold_Data_Unique.xlsx", "Breaking"),
     ("Football_Sold_Data_Unique.xlsx", "Football"),
     ("Ice Hockey_Sold_Data_Unique.xlsx", "Ice Hockey"),
-    ("Soccer_Sold_Data_Unique.xlsx", "Soccer"),
     ("Mixed Martial Arts_Sold_Data_Unique.xlsx", "Mixed Martial Arts"),
-    ("Basketball_Sold_Data_Unique.xlsx", "Basketball"),
+    ("Soccer_Sold_Data_Unique.xlsx", "Soccer"),
+    ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
 ]
 
 try:
@@ -54,7 +54,7 @@ try:
             df.fillna('', inplace=True)
 
             # Set column headers
-            column_headers = ["Sport", "Season Year", "Set", "Variation", "Player Name", "Sold Price", "Sold Date", "Card Link"]
+            column_headers = ["Sport", "Season Year", "Set", "Variation", "Player Name", "Sold Price", "Sold Date", "Card Number", "Card Link"]
             sheet.append_row(column_headers)  # Add column headers
 
             # Prepare data for appending
