@@ -9,16 +9,16 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Define the list of files and their corresponding sport names
 files = [
-    ("Auto Racing_Sold_Data_Unique.xlsx", "Auto Racing"),
     ("Baseball_Sold_Data_Unique.xlsx", "Baseball"),
     ("Basketball_Sold_Data_Unique.xlsx", "Basketball"),
-    ("Boxing_Sold_Data_Unique.xlsx", "Boxing"), 
-    ("Breaking_Sold_Data_Unique.xlsx", "Breaking"),
     ("Football_Sold_Data_Unique.xlsx", "Football"),
-    ("Ice Hockey_Sold_Data_Unique.xlsx", "Ice Hockey"),
-    ("Mixed Martial Arts_Sold_Data_Unique.xlsx", "Mixed Martial Arts"),
-    ("Soccer_Sold_Data_Unique.xlsx", "Soccer"),
-    ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
+    # ("Auto Racing_Sold_Data_Unique.xlsx", "Auto Racing"),
+    # ("Boxing_Sold_Data_Unique.xlsx", "Boxing"), 
+    # ("Breaking_Sold_Data_Unique.xlsx", "Breaking"),
+    # ("Ice Hockey_Sold_Data_Unique.xlsx", "Ice Hockey"),
+    # ("Mixed Martial Arts_Sold_Data_Unique.xlsx", "Mixed Martial Arts"),
+    # ("Soccer_Sold_Data_Unique.xlsx", "Soccer"),
+    # ("Wrestling_Sold_Data_Unique.xlsx", "Wrestling"),
 ]
 
 try:
@@ -27,7 +27,8 @@ try:
     client = gspread.authorize(creds)
 
     # Open the Google Sheet by its ID
-    SPREADSHEET_ID = "1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA"
+    # SPREADSHEET_ID = "1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA"
+    SPREADSHEET_ID = "1xncrauZRIssW_QmOEUVukjD-eexpiChn5DvRUirp9Ds"
     spreadsheet = client.open_by_key(SPREADSHEET_ID)
     print("Successfully accessed the Google Sheet!")
 

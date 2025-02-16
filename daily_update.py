@@ -34,16 +34,16 @@ start_time = time.time()
 
 # List of sports to scrape
 sports = [
-    "Auto Racing", 
-    "Boxing", 
-    "Wrestling", 
     "Baseball", 
-    "Breaking", 
-    "Football", 
-    "Ice Hockey", 
-    "Soccer", 
-    "Mixed Martial Arts",
     "Basketball"
+    "Football", 
+    # "Auto Racing", 
+    # "Boxing", 
+    # "Wrestling", 
+    # "Breaking", 
+    # "Ice Hockey", 
+    # "Soccer", 
+    # "Mixed Martial Arts",
 ]
 
 def clean_set_name(set_name):
@@ -72,7 +72,7 @@ SERVICE_ACCOUNT_FILE = 'C:/ebay-sheet.json'
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name(str(SERVICE_ACCOUNT_FILE), scope)
 client = gspread.authorize(creds)
-spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA/edit?gid=0')
+spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1xncrauZRIssW_QmOEUVukjD-eexpiChn5DvRUirp9Ds/edit?gid=0')
 
 def extract_item_details(link):
     product_response = requests.get(link)
