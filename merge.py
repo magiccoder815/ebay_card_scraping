@@ -3,7 +3,7 @@ import pandas as pd
 
 # Define the root directory where your date-based folders are located
 root_dir = "."  # Change this if needed
-output_file = "Basketball_Sold_2025-02-19.xlsx"
+output_file = "Football_Sold_Data_Unique.xlsx"
 
 def get_xlsx_files(root_dir):
     """Retrieve all Basketball_YYYY-MM-DD.xlsx files from date-based folders."""
@@ -12,7 +12,7 @@ def get_xlsx_files(root_dir):
         folder_path = os.path.join(root_dir, folder)
         if os.path.isdir(folder_path) and folder.startswith("2025-"):
             for file in os.listdir(folder_path):
-                if file.startswith("Basketball_") and file.endswith(".xlsx"):
+                if file.startswith("Football_") and file.endswith(".xlsx"):
                     files.append(os.path.join(folder_path, file))
     return files
 
