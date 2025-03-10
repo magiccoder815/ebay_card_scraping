@@ -9,9 +9,9 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Define the list of files and their corresponding sport names
 files = [
-    ("Baseball_Sold_Data_Unique.xlsx", "Baseball"),
+    # ("Baseball_Sold_Data_Unique.xlsx", "Baseball"),
     ("Basketball_Sold_Data_Unique.xlsx", "Basketball"),
-    ("Football_Sold_Data_Unique.xlsx", "Football"),
+    # ("Football_Sold_Data_Unique.xlsx", "Football"),
     # ("Auto Racing_Sold_Data_Unique.xlsx", "Auto Racing"),
     # ("Boxing_Sold_Data_Unique.xlsx", "Boxing"), 
     # ("Breaking_Sold_Data_Unique.xlsx", "Breaking"),
@@ -28,7 +28,7 @@ try:
 
     # Open the Google Sheet by its ID
     # SPREADSHEET_ID = "1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA"
-    SPREADSHEET_ID = "1xncrauZRIssW_QmOEUVukjD-eexpiChn5DvRUirp9Ds"
+    SPREADSHEET_ID = "1hwdmhFzl3WFxqJ7X3ugs9DqrGGMkonKnOT7wu_OdnyA"
     spreadsheet = client.open_by_key(SPREADSHEET_ID)
     print("Successfully accessed the Google Sheet!")
 
